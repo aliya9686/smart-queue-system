@@ -8,6 +8,8 @@ const env = {
   mongoUri:
     process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/smart-queue-system',
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  jwtSecret: process.env.JWT_SECRET || 'dev-jwt-secret',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1h',
 };
 
 module.exports = {

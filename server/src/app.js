@@ -10,6 +10,7 @@ const { apiRouter } = require('./routes');
 function createApp() {
   const app = express();
 
+  app.disable('x-powered-by');
   app.use(helmet());
   app.use(
     cors({
@@ -18,7 +19,7 @@ function createApp() {
     }),
   );
   app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
-  app.use(express.json());
+  app.use(express.json({ limit: '10kb' }));
 
   app.get('/', (_request, response) => {
     response.json({

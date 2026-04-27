@@ -35,38 +35,71 @@ Purpose:
 - verify the API is alive
 - verify whether MongoDB is connected
 
-Example response:
-
-```json
-{
-  "success": true,
-  "data": {
-    "status": "ok",
-    "environment": "development",
-    "database": "connected"
-  }
-}
-```
-
 ### `GET /api/queues`
 
 Purpose:
 - provide a minimal queue list for frontend integration
 
-Example response:
+## Auth Endpoints
+
+### `POST /api/auth/register`
+
+Registers a new user.
 
 ```json
 {
-  "success": true,
-  "data": [
-    {
-      "_id": "680e3a1f1b2c3d4e5f6a0001",
-      "name": "Billing",
-      "description": "Billing support queue",
-      "status": "active",
-      "createdAt": "2026-04-27T10:00:00.000Z",
-      "updatedAt": "2026-04-27T10:00:00.000Z"
-    }
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "SecurePass1",
+  "role": "customer"
+}
+```
+
+### `POST /api/auth/login`
+
+Authenticates an existing user and returns a JWT.
+
+```json
+{
+  "email": "jane@example.com",
+  "password": "SecurePass1"
+}
+```
+
+### `GET /api/auth/me`
+
+Protected endpoint. Requires:
+
+```http
+Authorization: Bearer <jwt-token>
+```
+
+### `GET /api/auth/admin/overview`
+
+Protected admin-only endpoint used to demonstrate role-based access control.
+
+### Auth success response
+
+```json
+{
+  "message": "Login successful.",
+  "token": "jwt-token",
+  "user": {
+    "id": "mongo-object-id",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "role": "customer"
+  }
+}
+```
+
+### Validation error response
+
+```json
+{
+  "message": "Validation failed",
+  "errors": [
+    "Password must be at least 8 characters long."
   ]
 }
 ```

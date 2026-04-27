@@ -1,7 +1,7 @@
-const http = require('http');
-const { createApp } = require('./app');
-const { connectDatabase } = require('./config/database');
-const { env } = require('./config/env');
+const http = require("http");
+const { createApp } = require("./app");
+const { connectDatabase } = require("./config/database");
+const { env } = require("./config/env");
 
 async function startServer() {
   try {
@@ -16,7 +16,7 @@ async function startServer() {
       );
     });
   } catch (error) {
-    console.error('Failed to start server', error);
+    console.error("Failed to start server", error);
     process.exit(1);
   }
 }

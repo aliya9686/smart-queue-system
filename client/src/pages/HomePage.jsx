@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function HomePage() {
   return (
     <section className="panel">
@@ -18,6 +20,10 @@ export function HomePage() {
   routes/     router configuration
   styles/     global styling
   utils/      shared helpers`}</pre>
+      <p style={{ marginTop: "1rem" }}>
+        Start with <Link to="/login">Login</Link>, <Link to="/register">Register</Link>,
+        or view a sample <Link to="/status/sample-token">Queue Status</Link> page.
+      </p>
     </section>
   );
 }
