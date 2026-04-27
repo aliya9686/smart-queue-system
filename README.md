@@ -1,82 +1,73 @@
 # Smart Queue System
 
-A full-stack Smart Queue Management System authentication starter built with:
+Smart Queue System is a MERN stack application for managing digital queues,
+issuing service tokens, and operating service counters in real time.
 
-- React + Context API + Axios
-- Node.js + Express
-- MongoDB + Mongoose
-- JWT + bcrypt
+This branch currently combines:
 
-## Folder structure
+- Day 1 to Day 4 project foundation work
+- a React authentication flow for `admin` and `customer`
+- an Express + MongoDB backend scaffold
+- Mongoose models for queues, tokens, counters, token sequences, and users
+
+## Repository Structure
 
 ```text
 smart-queue-system/
-|-- client/
-|   |-- .env.example
-|   |-- index.html
-|   |-- package.json
-|   `-- src/
-|       |-- api/
-|       |-- components/
-|       |-- context/
-|       |-- pages/
-|       |-- styles/
-|       |-- App.jsx
-|       `-- main.jsx
-|-- docs/
-|   |-- api.md
-|   `-- architecture.md
-|-- server/
-|   |-- .env.example
-|   |-- package.json
-|   `-- src/
-|       |-- config/
-|       |-- controllers/
-|       |-- middleware/
-|       |-- models/
-|       |-- routes/
-|       |-- utils/
-|       `-- server.js
+  client/   React + Vite frontend
+  server/   Express + MongoDB backend
+  docs/     Architecture, API outline, and flow notes
 ```
 
-## Features
+## Implemented Foundation
 
-- Registration and login for `admin` and `customer`
-- Password hashing with `bcrypt`
-- JWT authentication with one-hour expiry
-- Protected API routes with role-based middleware
-- React auth context with route guards and Axios interceptor
-- Basic request validation and centralized error handling
+- frontend routing shell and page structure
+- authentication context, protected routes, login, and register flows
+- backend app bootstrap, middleware, and MongoDB connection handling
+- queue, token, counter, sequence, and user models
+- auth APIs and basic queue read endpoints
 
-## Quick start
+## Quick Start
 
 1. Install dependencies:
 
 ```bash
-cd server && npm install
-cd ../client && npm install
+cd client && npm install
+cd ../server && npm install
 ```
 
-2. Create env files:
+2. Create an environment file from the example:
 
 ```bash
-cd server && copy .env.example .env
-cd ../client && copy .env.example .env
+copy .env.example .env
 ```
 
-3. Start MongoDB locally, or point `MONGODB_URI` to your remote cluster.
+3. Ensure MongoDB is running locally, or point `MONGODB_URI` to a remote
+   cluster.
 
-4. Run the apps in separate terminals:
+4. Run the applications in separate terminals:
 
 ```bash
 cd server && npm run dev
 cd client && npm run dev
 ```
 
-5. Open `http://localhost:5173`.
+5. Open:
 
-## JWT storage tradeoff
+- frontend: `http://localhost:5173`
+- backend health check: `http://localhost:4000/api/health`
 
-This implementation stores the JWT in `localStorage` because it is simple for SPA flows and works cleanly with Axios interceptors. The tradeoff is that tokens in `localStorage` are accessible to JavaScript, which makes them more exposed if the app ever suffers an XSS bug.
+## Current API Baseline
 
-For higher-security production deployments, consider switching to `httpOnly`, `secure`, `sameSite` cookies. That reduces XSS token theft risk, but it also means you should add CSRF protection and adjust how the frontend sends authenticated requests.
+- `GET /api/health`
+- `GET /api/queues`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `GET /api/auth/admin/overview`
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [API Outline](docs/api.md)
+- [Flow Notes](docs/flow-diagrams.md)

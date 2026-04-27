@@ -1,47 +1,24 @@
-require("dotenv").config();
+const http = require("http");
+const { createApp } = require("./app");
+const { connectDatabase } = require("./config/database");
+const { env } = require("./config/env");
 
-const cors = require("cors");
-const express = require("express");
-const helmet = require("helmet");
-const morgan = require("morgan");
+async function startServer() {
+  try {
+    await connectDatabase();
 
-const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
-const { errorHandler, notFound } = require("./middleware/errorMiddleware");
+    const app = createApp();
+    const server = http.createServer(app);
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-const requiredEnvVars = ["MONGODB_URI", "JWT_SECRET"];
-
-requiredEnvVars.forEach((variableName) => {
-  if (!process.env[variableName]) {
-    throw new Error(`Missing required environment variable: ${variableName}`);
+    server.listen(env.port, () => {
+      console.log(
+        `Smart Queue API listening on http://localhost:${env.port} (${env.nodeEnv})`,
+      );
+    });
+  } catch (error) {
+    console.error("Failed to start server", error);
+    process.exit(1);
   }
-});
+}
 
-connectDB();
-
-app.disable("x-powered-by");
-app.use(helmet());
-app.use(
-  cors({
-    origin: clientUrl,
-    credentials: true,
-  })
-);
-app.use(express.json({ limit: "10kb" }));
-app.use(morgan("dev"));
-
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok", service: "smart-queue-server" });
-});
-
-app.use("/api/auth", authRoutes);
-
-app.use(notFound);
-app.use(errorHandler);
-
-app.listen(PORT, () => {
-  console.log(`Smart Queue server running on port ${PORT}`);
-});
+startServer();

@@ -1,10 +1,46 @@
-# API
+# Smart Queue System API Outline
 
-## Base URL
+## Base Path
 
 `/api`
 
-## Auth endpoints
+## Response Shape
+
+### Success
+
+```json
+{
+  "success": true,
+  "data": {}
+}
+```
+
+### Error
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INTERNAL_SERVER_ERROR",
+    "message": "Something went wrong."
+  }
+}
+```
+
+## Current Foundation Endpoints
+
+### `GET /api/health`
+
+Purpose:
+- verify the API is alive
+- verify whether MongoDB is connected
+
+### `GET /api/queues`
+
+Purpose:
+- provide a minimal queue list for frontend integration
+
+## Auth Endpoints
 
 ### `POST /api/auth/register`
 
@@ -42,7 +78,7 @@ Authorization: Bearer <jwt-token>
 
 Protected admin-only endpoint used to demonstrate role-based access control.
 
-## Success response shape
+### Auth success response
 
 ```json
 {
@@ -57,7 +93,7 @@ Protected admin-only endpoint used to demonstrate role-based access control.
 }
 ```
 
-## Error response shape
+### Validation error response
 
 ```json
 {
@@ -67,3 +103,19 @@ Protected admin-only endpoint used to demonstrate role-based access control.
   ]
 }
 ```
+
+## Planned Resource Areas
+
+- `queues`
+  Queue creation and administration
+- `tokens`
+  Token creation, lookup, and lifecycle
+- `counters`
+  Counter assignment and currently served token state
+
+## Error Conventions
+
+- `VALIDATION_ERROR`
+- `NOT_FOUND`
+- `DATABASE_UNAVAILABLE`
+- `INTERNAL_SERVER_ERROR`

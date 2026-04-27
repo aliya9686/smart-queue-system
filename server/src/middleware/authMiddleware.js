@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-
+const { env } = require("../config/env");
 const User = require("../models/User");
 const asyncHandler = require("../utils/asyncHandler");
 
@@ -13,7 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, env.jwtSecret);
     const user = await User.findById(decoded.sub);
 
     if (!user) {
