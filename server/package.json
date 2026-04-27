@@ -2,12 +2,12 @@
   "name": "smart-queue-server",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
- "scripts": {
-  "start": "node src/server.js",
-  "dev": "nodemon src/server.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "echo \"No tests configured yet\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -15,10 +15,12 @@
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
   }
 }
-

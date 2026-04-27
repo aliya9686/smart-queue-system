@@ -2,7 +2,10 @@
   "name": "smart-queue-system",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "client:dev": "npm run dev --prefix client",
+    "server:dev": "npm run dev --prefix server",
+    "build": "npm run build --prefix client"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
