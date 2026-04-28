@@ -4,4 +4,7 @@ client/node_modules/
 server/.env
 client/.env
 client/dist/
+server/dist/
+*.tsbuildinfo
+client/vite.config.d.ts
 npm-debug.log*
