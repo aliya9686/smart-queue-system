@@ -33,7 +33,7 @@
 
 Purpose:
 - verify the API is alive
-- verify whether MongoDB is connected
+- verify whether PostgreSQL is connected
 
 ### `GET /api/queues`
 
@@ -82,13 +82,15 @@ Protected admin-only endpoint used to demonstrate role-based access control.
 
 ```json
 {
-  "message": "Login successful.",
-  "token": "jwt-token",
-  "user": {
-    "id": "mongo-object-id",
-    "name": "Jane Doe",
-    "email": "jane@example.com",
-    "role": "customer"
+  "success": true,
+  "data": {
+    "token": "jwt-token",
+    "user": {
+      "id": "user-id",
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "role": "customer"
+    }
   }
 }
 ```
@@ -97,10 +99,14 @@ Protected admin-only endpoint used to demonstrate role-based access control.
 
 ```json
 {
-  "message": "Validation failed",
-  "errors": [
-    "Password must be at least 8 characters long."
-  ]
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed.",
+    "details": [
+      "Password must be at least 8 characters long."
+    ]
+  }
 }
 ```
 

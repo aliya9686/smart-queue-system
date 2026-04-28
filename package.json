@@ -3,8 +3,11 @@
   "private": true,
   "scripts": {
     "client:dev": "npm run dev --prefix client",
+    "client:typecheck": "npm run typecheck --prefix client",
     "server:dev": "npm run dev --prefix server",
+    "server:typecheck": "npm run typecheck --prefix server",
     "client:build": "npm run build --prefix client",
+    "server:build": "npm run build --prefix server",
     "server:start": "npm run start --prefix server"
   }
 }

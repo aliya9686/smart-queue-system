@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  admin
+  customer
+}
+
+enum QueueStatus {
+  active
+  inactive
+}
+
+enum CounterStatus {
+  active
+  inactive
+}
+
+enum TokenStatus {
+  waiting
+  serving
+  completed
+  skipped
+  cancelled
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(customer)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Queue {
+  id                 String                   @id @default(cuid())
+  name               String                   @unique
+  description        String                   @default("")
+  status             QueueStatus              @default(active)
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  tokens             Token[]
+  sequences          Sequence[]
+  counterAssignments CounterQueueAssignment[]
+
+  @@index([status, createdAt(sort: Desc)])
+}
+
+model Counter {
+  id               String                   @id @default(cuid())
+  counterNumber    String                   @unique
+  name             String                   @default("")
+  status           CounterStatus            @default(active)
+  currentTokenId   String?                  @unique
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  currentToken     Token?                   @relation("CounterCurrentToken", fields: [currentTokenId], references: [id], onDelete: SetNull)
+  assignedTokens   Token[]                  @relation("AssignedCounterTokens")
+  queueAssignments CounterQueueAssignment[]
+
+  @@index([status])
+}
+
+model Token {
+  id                String       @id @default(cuid())
+  queueId           String
+  tokenNumber       Int
+  serviceDate       String
+  status            TokenStatus  @default(waiting)
+  assignedCounterId String?
+  customerName      String?
+  customerPhone     String?
+  calledAt          DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  queue             Queue        @relation(fields: [queueId], references: [id], onDelete: Restrict)
+  assignedCounter   Counter?     @relation("AssignedCounterTokens", fields: [assignedCounterId], references: [id], onDelete: SetNull)
+  currentAtCounter  Counter?     @relation("CounterCurrentToken")
+
+  @@unique([queueId, serviceDate, tokenNumber])
+  @@index([queueId, serviceDate, status, tokenNumber])
+  @@index([status, assignedCounterId, calledAt])
+  @@index([queueId, serviceDate, status, calledAt])
+  @@index([queueId, serviceDate, status, createdAt(sort: Desc)])
+  @@index([serviceDate, status, queueId])
+}
+
+model Sequence {
+  id           String   @id @default(cuid())
+  queueId      String
+  serviceDate  String
+  currentValue Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  queue        Queue    @relation(fields: [queueId], references: [id], onDelete: Cascade)
+
+  @@unique([queueId, serviceDate])
+  @@index([queueId])
+  @@index([serviceDate])
+}
+
+model CounterQueueAssignment {
+  counterId String
+  queueId   String
+  counter   Counter @relation(fields: [counterId], references: [id], onDelete: Cascade)
+  queue     Queue   @relation(fields: [queueId], references: [id], onDelete: Cascade)
+
+  @@id([counterId, queueId])
+  @@index([queueId])
+}
