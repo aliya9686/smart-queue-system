@@ -1,10 +1,28 @@
+# ── Dependencies ──────────────────────────────────────────────
 node_modules/
 server/node_modules/
 client/node_modules/
+
+# ── Environment secrets ───────────────────────────────────────
 server/.env
 client/.env
+.env
+
+# ── Build artifacts ───────────────────────────────────────────
 client/dist/
 server/dist/
+
+# ── TypeScript build info ─────────────────────────────────────
 *.tsbuildinfo
 client/vite.config.d.ts
+
+# ── Prisma ────────────────────────────────────────────────────
+# Generated client — regenerate with `npm run prisma:generate`
+server/src/generated/
+# Migration lock file is committed; shadow DB files are not
+server/prisma/*.db
+server/prisma/*.db-journal
+
+# ── Logs ──────────────────────────────────────────────────────
 npm-debug.log*
+*.log

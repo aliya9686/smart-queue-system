@@ -20,8 +20,8 @@ export interface RegisterPayload extends LoginPayload {
   role: UserRole;
 }
 
+/** Server now returns only the user; token lives in the httpOnly cookie. */
 export interface AuthResponse {
-  token: string;
   user: AuthUser;
 }
 
@@ -37,11 +37,9 @@ export type AuthActionResult =
 
 export interface AuthContextValue {
   user: AuthUser | null;
-  token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   register: (payload: RegisterPayload) => Promise<AuthActionResult>;
   login: (payload: LoginPayload) => Promise<AuthActionResult>;
-  logout: () => void;
-  refreshProfile: () => Promise<AuthUser>;
+  logout: () => Promise<void>;
 }

@@ -57,7 +57,7 @@ export default function DashboardPage() {
           <ul className="detail-list">
             <li>Role-aware route access is enforced in the client and API.</li>
             <li>JWT tokens expire after one hour by default.</li>
-            <li>Passwords are stored as bcrypt hashes in MongoDB.</li>
+            <li>Passwords are stored as bcrypt hashes in PostgreSQL via Prisma.</li>
           </ul>
         </article>
       </section>

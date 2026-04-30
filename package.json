@@ -3,11 +3,15 @@
   "private": true,
   "scripts": {
     "client:dev": "npm run dev --prefix client",
+    "client:lint": "npm run lint --prefix client",
     "client:typecheck": "npm run typecheck --prefix client",
-    "server:dev": "npm run dev --prefix server",
-    "server:typecheck": "npm run typecheck --prefix server",
     "client:build": "npm run build --prefix client",
+    "server:dev": "npm run dev --prefix server",
+    "server:lint": "npm run lint --prefix server",
+    "server:typecheck": "npm run typecheck --prefix server",
     "server:build": "npm run build --prefix server",
-    "server:start": "npm run start --prefix server"
+    "server:start": "npm run start --prefix server",
+    "lint": "npm run client:lint && npm run server:lint",
+    "typecheck": "npm run client:typecheck && npm run server:typecheck"
   }
 }
