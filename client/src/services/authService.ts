@@ -13,6 +13,12 @@ export async function registerUser(payload: RegisterPayload): Promise<AuthRespon
 }
 
 export async function getCurrentUser(): Promise<AuthUser> {
-  const response = await api.get<ApiSuccess<{ user: AuthUser }>>("/auth/me");
+  const response = await api.get<ApiSuccess<{ user: AuthUser }>>("/auth/me", {
+    skipAuthRedirect: true,
+  });
   return response.data.data.user;
+}
+
+export async function logoutUser(): Promise<void> {
+  await api.post("/auth/logout");
 }

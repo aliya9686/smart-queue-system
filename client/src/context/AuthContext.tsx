@@ -1,26 +1,28 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import { AUTH_UNAUTHORIZED_EVENT } from "../api/axios";
 import {
   getCurrentUser,
   loginUser,
+  logoutUser,
   registerUser,
 } from "../services/authService";
-import {
-  AUTH_UNAUTHORIZED_EVENT,
-  clearStoredToken,
-  getStoredToken,
-  setStoredToken,
-} from "../utils/authStorage";
-import { getApiErrorMessage } from "../utils/httpError";
 import type {
   AuthActionResult,
   AuthContextValue,
-  AuthResponse,
   AuthUser,
   LoginPayload,
   RegisterPayload,
 } from "../types/auth";
+import { getApiErrorMessage } from "../utils/httpError";
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
@@ -29,23 +31,18 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [token, setToken] = useState<string | null>(() => getStoredToken());
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+  // Prevent duplicate bootstrap calls in React StrictMode.
+  const bootstrapped = useRef(false);
 
   function clearSession(): void {
-    clearStoredToken();
-    setToken(null);
     setUser(null);
   }
 
-  function persistSession({ token: nextToken, user: nextUser }: AuthResponse): void {
-    setStoredToken(nextToken);
-    setToken(nextToken);
-    setUser(nextUser);
-  }
-
-  async function refreshProfile(): Promise<AuthUser> {
+  async function loadCurrentUser(): Promise<AuthUser> {
     const currentUser = await getCurrentUser();
     setUser(currentUser);
     return currentUser;
@@ -53,9 +50,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function register(payload: RegisterPayload): Promise<AuthActionResult> {
     try {
-      const authData = await registerUser(payload);
-      persistSession(authData);
-      return { success: true, user: authData.user };
+      const { user: nextUser } = await registerUser(payload);
+      setUser(nextUser);
+      return { success: true, user: nextUser };
     } catch (error) {
       return {
         success: false,
@@ -66,9 +63,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function login(payload: LoginPayload): Promise<AuthActionResult> {
     try {
-      const authData = await loginUser(payload);
-      persistSession(authData);
-      return { success: true, user: authData.user };
+      const { user: nextUser } = await loginUser(payload);
+      setUser(nextUser);
+      return { success: true, user: nextUser };
     } catch (error) {
       return {
         success: false,
@@ -77,33 +74,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  function logout() {
-    clearSession();
+  async function logout(): Promise<void> {
+    try {
+      await logoutUser();
+    } finally {
+      clearSession();
+    }
   }
 
   useEffect(() => {
     function handleUnauthorized(): void {
       clearSession();
       setIsLoading(false);
+
+      if (location.pathname !== "/login") {
+        navigate("/login", {
+          replace: true,
+          state: { from: location },
+        });
+      }
     }
 
     window.addEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
-
     return () => {
       window.removeEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
     };
-  }, []);
+  }, [location, navigate]);
 
   useEffect(() => {
-    async function bootstrapSession(): Promise<void> {
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
+    if (bootstrapped.current) return;
+    bootstrapped.current = true;
 
+    async function bootstrapSession(): Promise<void> {
       try {
-        await refreshProfile();
-      } catch (error) {
+        await loadCurrentUser();
+      } catch {
         clearSession();
       } finally {
         setIsLoading(false);
@@ -117,13 +122,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         user,
-        token,
         isLoading,
-        isAuthenticated: Boolean(token && user),
+        isAuthenticated: Boolean(user),
         register,
         login,
         logout,
-        refreshProfile,
       }}
     >
       {children}

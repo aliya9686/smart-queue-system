@@ -10,7 +10,7 @@ export interface SafeUser {
   updatedAt: Date;
 }
 
-export interface AuthenticatedUser extends SafeUser {}
+export type AuthenticatedUser = SafeUser;
 
 export interface UserRecord extends AuthenticatedUser {
   passwordHash: string;
