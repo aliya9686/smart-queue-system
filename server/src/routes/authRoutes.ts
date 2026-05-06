@@ -16,6 +16,6 @@ router.post("/register", validateBody(registerSchema), register);
 router.post("/login", validateBody(loginSchema), login);
 router.post("/logout", logout);
 router.get("/me", protect, getCurrentUser);
-router.get("/admin/overview", protect, authorizeRoles("admin"), getAdminOverview);
+router.get("/admin/overview", protect, authorizeRoles("ADMIN"), getAdminOverview);
 
 export default router;

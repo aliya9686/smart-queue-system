@@ -12,26 +12,24 @@ datasource db {
 }
 
 enum UserRole {
-  admin
-  customer
+  ADMIN
+  CUSTOMER
 }
 
 enum QueueStatus {
-  active
-  inactive
+  ACTIVE
+  INACTIVE
 }
 
 enum CounterStatus {
-  active
-  inactive
+  ACTIVE
+  INACTIVE
 }
 
 enum TokenStatus {
-  waiting
-  serving
-  completed
-  skipped
-  cancelled
+  WAITING
+  CALLED
+  COMPLETED
 }
 
 model User {
@@ -39,7 +37,7 @@ model User {
   name         String
   email        String   @unique
   passwordHash String
-  role         UserRole @default(customer)
+  role         UserRole @default(CUSTOMER)
   lastLoginAt  DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -49,7 +47,7 @@ model Queue {
   id                 String                   @id @default(cuid())
   name               String                   @unique
   description        String                   @default("")
-  status             QueueStatus              @default(active)
+  status             QueueStatus              @default(ACTIVE)
   createdAt          DateTime                 @default(now())
   updatedAt          DateTime                 @updatedAt
   tokens             Token[]
@@ -63,7 +61,7 @@ model Counter {
   id               String                   @id @default(cuid())
   counterNumber    String                   @unique
   name             String                   @default("")
-  status           CounterStatus            @default(active)
+  status           CounterStatus            @default(ACTIVE)
   currentTokenId   String?                  @unique
   createdAt        DateTime                 @default(now())
   updatedAt        DateTime                 @updatedAt
@@ -78,8 +76,8 @@ model Token {
   id                String       @id @default(cuid())
   queueId           String
   tokenNumber       Int
-  serviceDate       String
-  status            TokenStatus  @default(waiting)
+  serviceDate       DateTime     @db.Date
+  status            TokenStatus  @default(WAITING)
   assignedCounterId String?
   customerName      String?
   customerPhone     String?
@@ -102,7 +100,7 @@ model Token {
 model Sequence {
   id           String   @id @default(cuid())
   queueId      String
-  serviceDate  String
+  serviceDate  DateTime @db.Date
   currentValue Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
