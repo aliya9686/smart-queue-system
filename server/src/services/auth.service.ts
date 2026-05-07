@@ -57,7 +57,7 @@ export async function createUser(input: {
       name: input.name.trim(),
       email: normalizeEmail(input.email),
       passwordHash,
-      role: input.role || "customer",
+      role: input.role || "CUSTOMER",
     },
   });
 

@@ -1,4 +1,5 @@
 import type { ErrorRequestHandler } from "express";
+import { Prisma } from "@prisma/client";
 
 interface ErrorWithStatus extends Error {
   statusCode?: number;
@@ -7,6 +8,30 @@ interface ErrorWithStatus extends Error {
 }
 
 export const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2002") {
+      response.status(409).json({
+        success: false,
+        error: {
+          code: "DB_UNIQUE_CONSTRAINT",
+          message: "A record with these values already exists.",
+        },
+      });
+      return;
+    }
+
+    if (error.code === "P2003" || error.code === "P2025") {
+      response.status(404).json({
+        success: false,
+        error: {
+          code: "DB_RECORD_NOT_FOUND",
+          message: "Referenced record was not found.",
+        },
+      });
+      return;
+    }
+  }
+
   const typedError = error as ErrorWithStatus;
   const statusCode = typedError.statusCode || 500;
 

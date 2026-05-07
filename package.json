@@ -13,5 +13,8 @@
     "server:start": "npm run start --prefix server",
     "lint": "npm run client:lint && npm run server:lint",
     "typecheck": "npm run client:typecheck && npm run server:typecheck"
+  },
+  "dependencies": {
+    "22": "^0.0.0"
   }
 }
