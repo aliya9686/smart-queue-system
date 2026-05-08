@@ -1,86 +1,77 @@
 # Smart Queue System
 
-Smart Queue System is a MERN stack application for managing digital queues,
+Smart Queue System is a full-stack application for managing digital queues,
 issuing service tokens, and operating service counters in real time.
 
-This repository currently covers the minimum foundation for:
+This branch currently combines:
 
-- Day 1: project documentation and architecture baseline
-- Day 2: React application structure and frontend scaffold
-- Day 3: Express backend bootstrap, middleware, routing, and MongoDB wiring
-- Day 4: MongoDB and Mongoose models for queues, tokens, counters, and
-  per-day token sequences
+- Day 1 to Day 4 project foundation work
+- a React authentication flow for `admin` and `customer`
+- an Express + TypeScript backend
+- Prisma + PostgreSQL persistence for queues, tokens, counters, token sequences, and users
 
 ## Repository Structure
 
 ```text
 smart-queue-system/
-  client/   React + Vite frontend scaffold
-  server/   Express + MongoDB backend scaffold
-  docs/     Project architecture, API outline, and flow notes
+  client/   React + Vite frontend
+  server/   Express + Prisma + PostgreSQL backend
+  docs/     Architecture, API outline, and flow notes
 ```
 
-## Core Domain
+## Implemented Foundation
 
-- `Queue`
-  Service line such as Billing, Support, or Enquiry
-- `Token`
-  A customer's position in a queue for a specific business day
-- `Counter`
-  A service desk that can serve one or more assigned queues
-- `Sequence`
-  Atomic per-queue, per-day counter used to generate token numbers safely
-
-## Current Scope
-
-Included in this foundation:
-
-- frontend routing shell and folder structure
-- backend app bootstrap and MongoDB connection handling
-- queue management data models and indexes
-- basic health and queue read routes
-
-Not included yet:
-
-- authentication and authorization
-- realtime socket flows
-- queue business actions such as call-next, complete, or skip
-- production deployment configuration
+- frontend routing shell and page structure
+- authentication context, protected routes, login, and register flows
+- backend app bootstrap, middleware, and PostgreSQL connection handling
+- Prisma schema for queue, token, counter, sequence, and user resources
+- queue and token APIs with validation and transaction-safe token sequencing
+- auth APIs and health checks
 
 ## Quick Start
 
-1. Create environment variables:
-
-```env
-PORT=4000
-MONGODB_URI=mongodb://127.0.0.1:27017/smart-queue-system
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
-```
-
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 cd client && npm install
 cd ../server && npm install
 ```
 
-3. Run the applications:
+2. Create an environment file from the example:
+
+```bash
+copy server\.env.example server\.env
+```
+
+3. Ensure PostgreSQL is running locally and set `DATABASE_URL` inside
+   `server/.env`.
+
+4. Run the applications in separate terminals:
 
 ```bash
 cd server && npm run dev
 cd client && npm run dev
 ```
 
-## API Baseline
+5. Open:
+
+- frontend: `http://localhost:5173`
+- backend health check: `http://localhost:4000/api/health`
+
+## Current API Baseline
 
 - `GET /api/health`
-  Service and database readiness summary
 - `GET /api/queues`
-  Minimal queue list endpoint for frontend integration
+- `POST /api/queues`
+- `POST /api/tokens`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `GET /api/auth/admin/overview`
 
-For more details, see:
+## Documentation
 
-- [Architecture](D:/Project/smart-queue-system/docs/architecture.md)
-- [API Outline](D:/Project/smart-queue-system/docs/api.md)
-- [Flow Notes](D:/Project/smart-queue-system/docs/flow-diagrams.md)
+- [Architecture](docs/architecture.md)
+- [API Outline](docs/api.md)
+- [Backend Onboarding](docs/backend-onboarding.md)
+- [Flow Notes](docs/flow-diagrams.md)
